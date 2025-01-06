@@ -1,28 +1,17 @@
-const { Pool } = require("pg");
+const pool = require("../config/database");
 
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT,
-});
-
-async function createUsersTable() {
-  const query = `
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      username VARCHAR(255) NOT NULL,
-      hash TEXT NOT NULL,
-      salt TEXT NOT NULL
-    );
-  `;
-  try {
-    await pool.query(query);
-    console.log("Users table created successfully!");
-  } catch (err) {
-    console.error("Error creating users table:", err);
-  }
-}
-
-createUsersTable();
+const User = {
+    async findByUsername(username) {
+      const query = "SELECT * FROM users WHERE username = $1";
+      const { rows } = await pool.query(query, [username]);
+      return rows[0];
+    },
+    
+    async create(username, hash, salt) {
+      const query = "INSERT INTO users (username, hash, salt) VALUES ($1, $2, $3) RETURNING *";
+      const { rows } = await pool.query(query, [username, hash, salt]);
+      return rows[0];
+    }
+};
+  
+module.exports = User;
