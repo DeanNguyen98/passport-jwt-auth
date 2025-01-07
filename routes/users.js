@@ -1,7 +1,29 @@
 const router = require("express").Router();
 const pool = require("../config/database")
 const utils = require("../lib/util")
-router.post("/login", function (req, res, next) {});
+router.post("/login", async function (req, res, next) {
+  try {
+    const { rows } = await pool.query("SELECT * FROM users WHERE username = $1", [req.body.username]);
+    const user = rows[0];
+    if (!user) {
+      return res.status(401).json({success: false, msg:"Could not find user"});
+    }
+    const isValid = utils.validPassword(req.body.password, user.hash, user.salt);
+    if (isValid) {
+      const tokenObject = utils.issueJWT(user);
+      res.status(200).json({
+        success:true,
+        token: tokenObject.token,
+        expiresIn: tokenObject.expires,
+      });
+    } else {
+      res.status(401).json({success: false, msg: "you have entered the wrong password"});
+    }
+  } catch(err) {
+      next(err);
+  }
+ 
+});
 
 router.get("/main", (req,res) => {
     res.send("hello");
