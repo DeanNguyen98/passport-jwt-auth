@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const pool = require("../config/database")
 const utils = require("../lib/util")
+const passport = require("passport");
+
 router.post("/login", async function (req, res, next) {
   try {
     const { rows } = await pool.query("SELECT * FROM users WHERE username = $1", [req.body.username]);
@@ -13,6 +15,7 @@ router.post("/login", async function (req, res, next) {
       const tokenObject = utils.issueJWT(user);
       res.status(200).json({
         success:true,
+        user: user,
         token: tokenObject.token,
         expiresIn: tokenObject.expires,
       });
@@ -25,9 +28,15 @@ router.post("/login", async function (req, res, next) {
  
 });
 
-router.get("/main", (req,res) => {
-    res.send("hello");
+router.get("/protected", passport.authenticate("jwt", {session: false}), (req, res) => {
+  res.status(200).json({
+    success: true,
+    msg: "You are authenticated to this route"
+  });
 })
+
+
+
 router.post("/register", async function (req, res, next) {
     const saltHash = utils.genPassword(req.body.password);
 
