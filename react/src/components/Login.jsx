@@ -1,13 +1,31 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login submitted:", { username, password });
-    // Add API call logic here
+    try {
+        const response = await fetch("http://localhost:3000/users/login", {
+            method: "POST",
+            headers: {
+                "Content-Type":"application/json",
+            },
+            body: JSON.stringify({username, password})
+        })
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem("token", data.token);
+            alert("Login successfully");
+            navigate("/protected");
+        } else {
+            alert(data.msg || "Login failed");
+        }
+    } catch(err) {
+        console.log(err)
+    }
   };
 
   return (

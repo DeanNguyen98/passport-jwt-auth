@@ -4,10 +4,27 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register submitted:", { username, password });
-    // Add API call logic here
+    try {
+        const response = await fetch("http://localhost:3000/users/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          alert("Registration successful");
+        } else {
+          alert(data.msg || "Registration failed");
+        }
+      } catch (error) {
+        console.error("Error registering:", error);
+      }
   };
 
   return (
