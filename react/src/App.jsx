@@ -1,10 +1,10 @@
 
 import './App.css'
 
-function App() {
+import AppRoutes from "./routes/Routes";
 
+const App = () => {
+  return <AppRoutes />;
+};
 
-  return 
-}
-
-export default App
+export default App;
