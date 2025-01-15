@@ -1,9 +1,9 @@
-## About this repo 
+# About this repo 
 This repository provides a simple boilerplate for implementing user authentication using Express.js and Passport JWT. It includes both backend and frontend components, with JWT-based authentication for protected routes.
 
 This project is designed as a starting point for future projects, providing the essential setup for secure user authentication and a basic frontend interface.
 
-## Logic
+# Logic
 
 - User authentication is verified using Passport JWT.
 - Upon successful login, a JWT is generated and sent to the client.
@@ -11,14 +11,14 @@ This project is designed as a starting point for future projects, providing the 
 - The token is attached as a Bearer Token in request headers for accessing protected routes.
 
 
-## Technologies Used
+# Technologies Used
 
-# Backend
+## Backend
 - Node.js with Express.js
 - Passport.js with passport-jwt
 - PostgreSQL for user data management
 - jsonwebtoken for creating and verifying JWTs
 
-# Frontend
+## Frontend
 - React.js (built with Vite)
 - React Router for navigation
